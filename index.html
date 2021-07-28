@@ -10,24 +10,36 @@
     <meta name="description" content=" ">
     <link rel="stylesheet" href="styles.css">
     <script src="main.js"></script>
-    <link
+    <link rel="stylesheet" href="bees.css">
+    <!-- <script src="bees.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"
+        integrity="sha512-z4OUqw38qNLpn1libAN9BsoDx6nbNFio5lA6CuTp9NlK83b89hgyCVq+N5FdBJptINztxn1Z3SaKSKUS5UP60Q=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- <link
         href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAATklEQVQ4jWNgoAL4j0aToge3AFQMGWOTw2k6PgNJcxopaigKA2yC/4mUo50LKDIAVyyQ5AJC6YB4pxGjBt15JCUkQhrweYGUgMdqAeUAADmCM80nYJooAAAAAElFTkSuQmCC"
-        rel="icon" type="image/x-icon" />
+        rel="icon" type="image/x-icon" /> -->
 
 </head>
 
 <body>
+    <div class="swarm"></div>
+
     <div class="pop-up" id="menu">
-        <h1>heck: hex the deck. the game</h1>
-        <h2>Claim the majority of the cards by placing one with a higher value next to other ones to win the game.</h2>
-        <div class="buttons">
-            <button id="computer" onclick="setMode('computer')">Play against a swarm of bees</button>
-            <button id="two-player" onclick="setMode('two-player')">Play locally with a friend</button>
+        <div>
+            <h1>heck: hex the deck. the game</h1>
+            <h2>Claim the majority of the cards by placing one with a higher value next to other ones to win the game.
+            </h2>
+            <div class="buttons">
+                <button id="computer" onclick="setMode('computer')">Play against a swarm of bees</button>
+                <button id="two-player" onclick="setMode('two-player')">Play locally with a friend</button>
+            </div>
         </div>
     </div>
     <div class="pop-up" id="game-over">
-        <span id="winner"></span>
-        <button id="computer" onclick="newGame()">New game</button>
+        <div>
+            <span id="winner"></span>
+            <button id="computer" onclick="newGame()">New game</button>
+        </div>
     </div>
     <div class="game">
         <span>bees' deck</span>

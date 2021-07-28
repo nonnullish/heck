@@ -25,6 +25,7 @@
 
 :root {
     --yellow: #FFECCA;
+    --dark-yellow: #f1cf92;
     --pink: #FFACAC;
     --blue: #B9DBD7;
 }
@@ -55,20 +56,33 @@ body {
 }
 
 .pop-up {
-    padding: 60px;
     width: calc((2 * var(--m) + var(--s)) * 9 - 40px);
-    height: calc((2 * var(--m) + var(--s)) * 9 - 40px);
+    height: calc(((2 * var(--m) + var(--s)) * 9 - 40px) * 1.1547);
+    position: fixed;
+    z-index: 1;
+    text-align: center;
+    box-sizing: border-box;
+    clip-path: polygon(0% 25%, 0% 75%, 50% 100%, 100% 75%, 100% 25%, 50% 0%);
+    background: #f5dbac;
+    padding: 2vh;
+}
+
+.pop-up h1, .pop-up h2 {
+    font-weight: normal;
+    font-size: unset;
+}
+
+.pop-up>div {
+    padding: 40px;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
     align-items: center;
-    position: fixed;
-    z-index: 1;
-    background: var(--yellow);
-    text-align: center;
-    box-sizing: border-box;
-    justify-content: space-evenly;
-    border-radius: 100%;
-    border: 2px solid white;
+    justify-content: center;
+    clip-path: polygon(0% 25%, 0% 75%, 50% 100%, 100% 75%, 100% 25%, 50% 0%);
+    width: 100%;
+    height: 100%;
+    background-color: var(--dark-yellow);
 }
 
 #game-over {
@@ -112,7 +126,7 @@ body {
     display: inline-block;
     font-size: initial;
     clip-path: polygon(0% 25%, 0% 75%, 50% 100%, 100% 75%, 100% 25%, 50% 0%);
-    background: white;
+    background: var(--dark-yellow);
     margin-bottom: calc(var(--m) - var(--s)*0.2885);
     /* = tan(30)/2 */
     font-size: calc(var(--s) * 0.4);
@@ -136,4 +150,28 @@ body {
 
 .game span:nth-of-type(2) {
     padding: 10px;
+}
+
+button, input, optgroup, select, textarea {
+    font-family: inherit;
+    font-size: 100%;
+    line-height: 1.15;
+    margin: 0;
+}
+
+button, input {
+    overflow: visible;
+}
+
+button, select {
+    text-transform: none;
+}
+
+button, [type="button"], [type="reset"], [type="submit"] {
+    -webkit-appearance: none;
+    margin: 10px;
+    padding: 10px 20px;
+    width: 95%;
+    border: 1px solid black;
+    outline: none;
 }

@@ -89,17 +89,32 @@ let Deck = class {
             if (!state.activeCard || state.activeCard.value == card.value) {
                 if (!card.active && !card.used) {
                     card.active = true;
-                    card.html.style.opacity = "0.5";
+                    anime({
+                        targets: card.html,
+                        opacity: 0.5,
+                        easing: 'easeOutCubic',
+                        duration: 300
+                    });
                     state.activeCard = card;
                 }
                 else if (card.active && state.activeCard.value == card.value) {
                     state.activeCard = null;
                     card.active = false;
-                    card.html.style.opacity = "1";
+                    anime({
+                        targets: card.html,
+                        opacity: 1,
+                        easing: 'easeOutCubic',
+                        duration: 300
+                    });
                 }
                 else {
                     card.active = false;
-                    card.html.style.opacity = "1";
+                    anime({
+                        targets: card.html,
+                        opacity: 1,
+                        easing: 'easeOutCubic',
+                        duration: 300
+                    });
                 }
             }
         }
@@ -154,21 +169,60 @@ let Board = class {
         if (state.activeCard != null && tile.active == true) {
             tile.cardValue = state.activeCard.value;
             tile.ownedBy = state.activePlayer;
-            this.compareValues(tile);
+            let claimedTiles = this.compareValues(tile);
             tile.html.style.backgroundColor = tile.ownedBy.color;
             tile.html.appendChild(document.createTextNode(tile.cardValue));
+
+            var tl = anime.timeline({
+                easing: 'easeOutCubic',
+                duration: 350
+            });
+            tl.add({
+                targets: [tile.html, claimedTiles].flat(),
+                scale: 1.3,
+            });
+            tl.add({
+                targets: [tile.html, claimedTiles].flat(),
+                scale: 1,
+            });
+
             tile.active = false;
             state.activeCard.used = true;
-            state.activeCard.html.style.opacity = "0.3";
+            anime({
+                targets: state.activeCard,
+                opacity: 0.3,
+                easing: 'easeOutCubic',
+                duration: 300
+            });
             state.activeCard = null;
             if (state.activePlayer == this.players[0]) {
                 state.activePlayer = this.players[1];
-                this.players[0].deck.cards[0].html.parentElement.style.opacity = "0.5";
-                this.players[1].deck.cards[0].html.parentElement.style.opacity = "1";
+                anime({
+                    targets: this.players[0].deck.cards[0].html.parentElement,
+                    opacity: 0.5,
+                    easing: 'easeOutCubic',
+                    duration: 300
+                });
+                anime({
+                    targets: this.players[1].deck.cards[0].html.parentElement,
+                    opacity: 1,
+                    easing: 'easeOutCubic',
+                    duration: 300
+                });
             } else {
                 state.activePlayer = this.players[0];
-                this.players[1].deck.cards[0].html.parentElement.style.opacity = "0.5";
-                this.players[0].deck.cards[0].html.parentElement.style.opacity = "1";
+                anime({
+                    targets: this.players[1].deck.cards[0].html.parentElement,
+                    opacity: 0.5,
+                    easing: 'easeOutCubic',
+                    duration: 300
+                });
+                anime({
+                    targets: this.players[0].deck.cards[0].html.parentElement,
+                    opacity: 1,
+                    easing: 'easeOutCubic',
+                    duration: 300
+                });
             }
         }
 
@@ -184,12 +238,14 @@ let Board = class {
     }
 
     computerMove() {
-        let availableCards = state.activePlayer.deck.cards.filter(card => { if (!card.used) { return card } });
-        let availableTiles = this.tiles.filter(tile => { if (tile !== undefined && tile.html !== null && tile.active) { return tile } });
-        let randomCard = availableCards[Math.floor(Math.random() * availableCards.length)];
-        let randomTile = availableTiles[Math.floor(Math.random() * availableTiles.length)];
-        state.activeCard = randomCard;
-        this.placeCardOnTile(randomTile);
+        setTimeout(() => {
+            let availableCards = state.activePlayer.deck.cards.filter(card => { if (!card.used) { return card } });
+            let availableTiles = this.tiles.filter(tile => { if (tile !== undefined && tile.html !== null && tile.active) { return tile } });
+            let randomCard = availableCards[Math.floor(Math.random() * availableCards.length)];
+            let randomTile = availableTiles[Math.floor(Math.random() * availableTiles.length)];
+            state.activeCard = randomCard;
+            this.placeCardOnTile(randomTile);
+        }, 750);
     }
 
     compareValues(tile) {
@@ -215,13 +271,21 @@ let Board = class {
             [13, 14, 16]
         ]
 
+        let gettingOwned = neighborIDs[tileID].filter(id =>
+            tile.cardValue > this.tiles[id].cardValue
+            && this.tiles[id].cardValue !== null
+            && this.tiles[id].ownedBy !== state.activePlayer);
+
+        let gettingOwnedHTML = gettingOwned.map(index => this.tiles[index].html);
+
         neighborIDs[tileID].map(id => {
             if (tile.cardValue > this.tiles[id].cardValue && this.tiles[id].cardValue !== null) {
                 this.tiles[id].ownedBy = state.activePlayer;
                 this.tiles[id].html.style.backgroundColor = this.tiles[id].ownedBy.color;
             }
-
         });
+
+        return gettingOwnedHTML;
     }
 
     gameOver() {
@@ -272,10 +336,20 @@ let setup = () => {
         }
     }
     if (random == 1) {
-        players[1].deck.cards[0].html.parentElement.style.opacity = "0.5";
+        anime({
+            targets: players[1].deck.cards[0].html.parentElement,
+            opacity: 0.5,
+            easing: 'easeOutCubic',
+            duration: 300
+        });
     }
     else {
-        players[0].deck.cards[0].html.parentElement.style.opacity = "0.5";
+        anime({
+            targets: players[0].deck.cards[1].html.parentElement,
+            opacity: 0.5,
+            easing: 'easeOutCubic',
+            duration: 300
+        });
     }
     return new Board(players);
 };
