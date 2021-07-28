@@ -23,6 +23,12 @@
     }
 }
 
+:root {
+    --yellow: #FFECCA;
+    --pink: #FFACAC;
+    --blue: #B9DBD7;
+}
+
 div {
     -webkit-touch-callout: none;
     -webkit-appearance: none;
@@ -35,6 +41,7 @@ div {
 }
 
 body {
+    background-color: var(--yellow);
     touch-action: pan-y, pan-x;
     font-family: 'Inconsolata';
     height: 100vh;
@@ -47,20 +54,29 @@ body {
     justify-content: center;
 }
 
-.menu {
-    width: calc((2 * var(--m) + var(--s)) * 9);
-    height: calc((2 * var(--m) + var(--s)) * 9);
+.pop-up {
+    padding: 60px;
+    width: calc((2 * var(--m) + var(--s)) * 9 - 40px);
+    height: calc((2 * var(--m) + var(--s)) * 9 - 40px);
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     position: fixed;
     z-index: 1;
-    background: green;
+    background: var(--yellow);
+    text-align: center;
+    box-sizing: border-box;
+    justify-content: space-evenly;
+    border-radius: 100%;
+    border: 2px solid white;
+}
+
+#game-over {
+    display: none;
 }
 
 .game {
-    display: flex;
+    display: none;
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -96,7 +112,7 @@ body {
     display: inline-block;
     font-size: initial;
     clip-path: polygon(0% 25%, 0% 75%, 50% 100%, 100% 75%, 100% 25%, 50% 0%);
-    background: #eeeeee;
+    background: white;
     margin-bottom: calc(var(--m) - var(--s)*0.2885);
     /* = tan(30)/2 */
     font-size: calc(var(--s) * 0.4);
@@ -116,4 +132,8 @@ body {
 
 .hexagon#hidden {
     opacity: 0;
+}
+
+.game span:nth-of-type(2) {
+    padding: 10px;
 }

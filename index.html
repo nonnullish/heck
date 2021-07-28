@@ -17,22 +17,28 @@
 </head>
 
 <body>
-    <div class="menu">
-        Petierunt uti sibi concilium totius Galliae in diem certam indicere. Morbi fringilla convallis sapien, id
-        pulvinar odio volutpat. A communi observantia non est recedendum.
+    <div class="pop-up" id="menu">
+        <h1>heck: hex the deck. the game</h1>
+        <h2>Claim the majority of the cards by placing one with a higher value next to other ones to win the game.</h2>
         <div class="buttons">
-            <button id="computer" onclick="setMode('computer')">Play with computer</button>
+            <button id="computer" onclick="setMode('computer')">Play against a swarm of bees</button>
             <button id="two-player" onclick="setMode('two-player')">Play locally with a friend</button>
         </div>
     </div>
-    <div class=" game">
-                <div class="deck" id="player-1"></div>
-                <div id="canvas-wrapper">
-                    <div id="canvas"> </div>
-                </div>
-                <div class="deck" id="player-2"></div>
+    <div class="pop-up" id="game-over">
+        <span id="winner"></span>
+        <button id="computer" onclick="newGame()">New game</button>
+    </div>
+    <div class="game">
+        <span>bees' deck</span>
+        <div class="deck" id="player-1"></div>
+        <div id="canvas-wrapper">
+            <div id="canvas"> </div>
         </div>
-        <!-- <span id="credit">by <a href="https://github.com/tusindfryd/">tusindfryd</a></span> -->
+        <div class="deck" id="player-2"></div>
+        <span>your deck</span>
+    </div>
+    <!-- <span id="credit">by <a href="https://github.com/tusindfryd/">tusindfryd</a></span> -->
 </body>
 
 </html>

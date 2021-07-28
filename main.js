@@ -2,7 +2,6 @@ window.onload = () => {
     let vh = window.innerHeight * 0.01;
     document.documentElement.style.setProperty('--vh', `${vh}px`);
     state.board = setup();
-    menu();
 };
 
 const range = (start, stop, step = 1) =>
@@ -15,10 +14,29 @@ let state = {
     activeCard: null
 }
 
+let newGame = () => {
+    document.getElementById("game-over").style.display = "none";
+
+    document.getElementById("canvas").innerHTML = "";
+    document.getElementsByClassName("deck")[0].innerHTML = "";
+    document.getElementsByClassName("deck")[1].innerHTML = "";
+
+    state = {
+        board: null,
+        mode: null,
+        activePlayer: null,
+        activeCard: null
+    }
+
+    state.board = setup();
+    document.getElementById("menu").style.display = "flex";
+}
+
 let setMode = (mode) => {
     state.mode = mode;
-    document.getElementsByClassName("menu")[0].style.display = "none";
-    if (state.activePlayer == state.board.players[0]) {
+    document.getElementById("menu").style.display = "none";
+    document.getElementsByClassName("game")[0].style.display = "flex";
+    if (state.activePlayer == state.board.players[0] && state.mode == "computer") {
         state.board.computerMove();
     }
 }
@@ -212,15 +230,16 @@ let Board = class {
         results.forEach((value, key) => {
             key.score = value;
         });
+        document.getElementById("game-over").style.display = "flex";
 
         if (this.players[0].score > this.players[1].score) {
-            console.log("player 1 won");
+            document.getElementById('winner').innerHTML = "Player 1 won!"
         }
         else if (this.players[1].score > this.players[0].score) {
-            console.log("player 2 won");
+            document.getElementById('winner').innerHTML = "Player 2 won!"
         }
         else {
-            console.log("it's a tie");
+            document.getElementById('winner').innerHTML = "It's a tie!"
         }
     }
 }
@@ -230,15 +249,15 @@ let setup = () => {
     let random = Math.round(Math.random());
     if (random == 1) {
         players = [
-            new Player(new Deck(1, 19), "red"),
-            new Player(new Deck(2, 19), "blue")
+            new Player(new Deck(1, 19), "#B9DBD7"),
+            new Player(new Deck(2, 19), "#ffacac")
         ]
         state.activePlayer = players[0];
     }
     else {
         players = [
-            new Player(new Deck(2, 19), "blue"),
-            new Player(new Deck(1, 19), "red")
+            new Player(new Deck(2, 19), "#ffacac"),
+            new Player(new Deck(1, 19), "#B9DBD7")
         ];
         state.activePlayer = players[1];
     }
@@ -259,8 +278,4 @@ let setup = () => {
         players[0].deck.cards[0].html.parentElement.style.opacity = "0.5";
     }
     return new Board(players);
-};
-
-let menu = () => {
-
 };
