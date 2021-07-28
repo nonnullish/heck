@@ -2,19 +2,28 @@ window.onload = () => {
     let vh = window.innerHeight * 0.01;
     document.documentElement.style.setProperty('--vh', `${vh}px`);
     setup();
+    menu();
 };
 
 const range = (start, stop, step = 1) =>
     Array(Math.ceil((stop - start) / step)).fill(start).map((x, y) => x + y * step)
 
 let state = {
+    mode: null,
     activePlayer: null,
     activeCard: null
 }
 
+let setMode = (mode) => {
+    state.mode = mode;
+    document.getElementsByClassName("menu")[0].style.display = "none";
+    console.log(state.mode);
+}
+
 let Player = class {
-    constructor(deck) {
+    constructor(deck, color) {
         this.deck = deck;
+        this.color = color;
         this.score = null;
     }
 };
@@ -125,13 +134,7 @@ let Board = class {
             tile.cardValue = state.activeCard.value;
             tile.ownedBy = state.activePlayer;
             this.compareValues(tile);
-            if (tile.ownedBy == this.players[0]) {
-                tile.html.style.backgroundColor = "red";
-            }
-            else {
-                tile.html.style.backgroundColor = "blue";
-            }
-
+            tile.html.style.backgroundColor = tile.ownedBy.color;
             tile.html.appendChild(document.createTextNode(tile.cardValue));
             tile.active = false;
             state.activeCard.used = true;
@@ -139,8 +142,12 @@ let Board = class {
             state.activeCard = null;
             if (state.activePlayer == this.players[0]) {
                 state.activePlayer = this.players[1];
+                this.players[0].deck.cards[0].html.parentElement.style.opacity = "0.5";
+                this.players[1].deck.cards[0].html.parentElement.style.opacity = "1";
             } else {
                 state.activePlayer = this.players[0];
+                this.players[1].deck.cards[0].html.parentElement.style.opacity = "0.5";
+                this.players[0].deck.cards[0].html.parentElement.style.opacity = "1";
             }
         }
         this.gameOver();
@@ -177,12 +184,7 @@ let Board = class {
         neighborIDs[tileID].map(id => {
             if (tile.cardValue > this.tiles[id].cardValue && this.tiles[id].cardValue !== null) {
                 this.tiles[id].ownedBy = state.activePlayer;
-                if (this.tiles[id].ownedBy == this.players[0]) {
-                    this.tiles[id].html.style.backgroundColor = "red";
-                }
-                else {
-                    this.tiles[id].html.style.backgroundColor = "blue";
-                }
+                this.tiles[id].html.style.backgroundColor = this.tiles[id].ownedBy.color;
             }
 
         });
@@ -209,17 +211,18 @@ let Board = class {
 
 let setup = () => {
     let players = [];
-    if (Math.round(Math.random()) == 1) {
+    let random = Math.round(Math.random());
+    if (random == 1) {
         players = [
-            new Player(new Deck(1, 19)),
-            new Player(new Deck(2, 19))
+            new Player(new Deck(1, 19), "red"),
+            new Player(new Deck(2, 19), "blue")
         ]
         state.activePlayer = players[0];
     }
     else {
         players = [
-            new Player(new Deck(2, 19)),
-            new Player(new Deck(1, 19))
+            new Player(new Deck(2, 19), "blue"),
+            new Player(new Deck(1, 19), "red")
         ];
         state.activePlayer = players[1];
     }
@@ -229,8 +232,19 @@ let setup = () => {
         let HTMLdeck = HTMLdecks[i];
         let playerDeck = players[i].deck.createHTMLDeck();
         for (let j in playerDeck) {
-            HTMLdeck.appendChild(playerDeck[j])
+            playerDeck[j].style.backgroundColor = players[i].color;
+            HTMLdeck.appendChild(playerDeck[j]);
         }
     }
+    if (random == 1) {
+        players[1].deck.cards[0].html.parentElement.style.opacity = "0.5";
+    }
+    else {
+        players[0].deck.cards[0].html.parentElement.style.opacity = "0.5";
+    }
     return new Board(players);
+};
+
+let menu = () => {
+
 };
