@@ -15,7 +15,7 @@ let state = {
 let Player = class {
     constructor(deck) {
         this.deck = deck;
-        this.active = false;
+        this.score = null;
     }
 };
 
@@ -55,20 +55,22 @@ let Deck = class {
     }
 
     selectCardFromDeck(card) {
-        if (!state.activeCard || state.activeCard.value == card.value) {
-            if (!card.active && !card.used) {
-                card.active = true;
-                card.html.style.opacity = "0.5";
-                state.activeCard = card;
-            }
-            else if (card.active && state.activeCard.value == card.value) {
-                state.activeCard = null;
-                card.active = false;
-                card.html.style.opacity = "1";
-            }
-            else {
-                card.active = false;
-                card.html.style.opacity = "1";
+        if (state.activePlayer.deck.cards.includes(card)) {
+            if (!state.activeCard || state.activeCard.value == card.value) {
+                if (!card.active && !card.used) {
+                    card.active = true;
+                    card.html.style.opacity = "0.5";
+                    state.activeCard = card;
+                }
+                else if (card.active && state.activeCard.value == card.value) {
+                    state.activeCard = null;
+                    card.active = false;
+                    card.html.style.opacity = "1";
+                }
+                else {
+                    card.active = false;
+                    card.html.style.opacity = "1";
+                }
             }
         }
     }
@@ -84,8 +86,9 @@ let Tile = class {
 }
 
 let Board = class {
-    constructor() {
+    constructor(players) {
         this.tiles = this.createTiles();
+        this.players = players;
         this.createHTMLTiles();
     }
 
@@ -118,24 +121,107 @@ let Board = class {
     }
 
     placeCardOnTile(tile) {
-        if (state.activeCard != null) {
+        if (state.activeCard != null && tile.active == true) {
             tile.cardValue = state.activeCard.value;
+            tile.ownedBy = state.activePlayer;
+            this.compareValues(tile);
+            if (tile.ownedBy == this.players[0]) {
+                tile.html.style.backgroundColor = "red";
+            }
+            else {
+                tile.html.style.backgroundColor = "blue";
+            }
+
             tile.html.appendChild(document.createTextNode(tile.cardValue));
+            tile.active = false;
             state.activeCard.used = true;
             state.activeCard.html.style.opacity = "0.3";
             state.activeCard = null;
+            if (state.activePlayer == this.players[0]) {
+                state.activePlayer = this.players[1];
+            } else {
+                state.activePlayer = this.players[0];
+            }
+        }
+        this.gameOver();
+
+        let allCards = (this.players.map(player => { return player.deck.cards })).flat();
+        if ((allCards.map(card => { return card.used })).every(c => c == true)) {
+            this.gameOver();
+        }
+    }
+
+    compareValues(tile) {
+        let tileID = parseInt(tile.html.id.match(/\d+/)[0]);
+        const neighborIDs = [
+            [1, 3, 4],
+            [0, 2, 4, 5],
+            [1, 5, 6],
+            [0, 4, 7, 8],
+            [0, 1, 3, 5, 8],
+            [1, 2, 4, 6, 9],
+            [2, 5, 9, 10],
+            [3, 8, 11],
+            [3, 4, 7, 11, 12],
+            [5, 6, 10, 13, 14],
+            [6, 9, 14],
+            [7, 8, 12, 15],
+            [8, 11, 13, 15, 16],
+            [9, 12, 14, 16, 17],
+            [9, 10, 13, 17],
+            [11, 12, 16],
+            [12, 13, 15, 17],
+            [13, 14, 16]
+        ]
+
+        neighborIDs[tileID].map(id => {
+            if (tile.cardValue > this.tiles[id].cardValue && this.tiles[id].cardValue !== null) {
+                this.tiles[id].ownedBy = state.activePlayer;
+                if (this.tiles[id].ownedBy == this.players[0]) {
+                    this.tiles[id].html.style.backgroundColor = "red";
+                }
+                else {
+                    this.tiles[id].html.style.backgroundColor = "blue";
+                }
+            }
+
+        });
+    }
+
+    gameOver() {
+        let results = ((this.tiles.map(tile => { return tile.ownedBy })).reduce((acc, e) => acc.set(e, (acc.get(e) || 0) + 1), new Map()));
+        results.delete(null);
+        results.forEach((value, key) => {
+            key.score = value;
+        });
+
+        if (this.players[0].score > this.players[1].score) {
+            console.log("player 1 won");
+        }
+        else if (this.players[1].score > this.players[0].score) {
+            console.log("player 2 won");
+        }
+        else {
+            console.log("it's a tie");
         }
     }
 }
 
 let setup = () => {
-    let players = [
-        new Player(new Deck(1, 19)),
-        new Player(new Deck(2, 19))
-    ];
-
+    let players = [];
     if (Math.round(Math.random()) == 1) {
-        [players[0], players[1]] = [players[1], players[0]];
+        players = [
+            new Player(new Deck(1, 19)),
+            new Player(new Deck(2, 19))
+        ]
+        state.activePlayer = players[0];
+    }
+    else {
+        players = [
+            new Player(new Deck(2, 19)),
+            new Player(new Deck(1, 19))
+        ];
+        state.activePlayer = players[1];
     }
 
     let HTMLdecks = document.getElementsByClassName("deck");
@@ -146,5 +232,5 @@ let setup = () => {
             HTMLdeck.appendChild(playerDeck[j])
         }
     }
-    new Board();
+    return new Board(players);
 };
