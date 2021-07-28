@@ -1,7 +1,7 @@
 window.onload = () => {
     let vh = window.innerHeight * 0.01;
     document.documentElement.style.setProperty('--vh', `${vh}px`);
-    setup();
+    state.board = setup();
     menu();
 };
 
@@ -9,6 +9,7 @@ const range = (start, stop, step = 1) =>
     Array(Math.ceil((stop - start) / step)).fill(start).map((x, y) => x + y * step)
 
 let state = {
+    board: null,
     mode: null,
     activePlayer: null,
     activeCard: null
@@ -17,7 +18,9 @@ let state = {
 let setMode = (mode) => {
     state.mode = mode;
     document.getElementsByClassName("menu")[0].style.display = "none";
-    console.log(state.mode);
+    if (state.activePlayer == state.board.players[0]) {
+        state.board.computerMove();
+    }
 }
 
 let Player = class {
@@ -150,12 +153,25 @@ let Board = class {
                 this.players[0].deck.cards[0].html.parentElement.style.opacity = "1";
             }
         }
-        this.gameOver();
 
         let allCards = (this.players.map(player => { return player.deck.cards })).flat();
-        if ((allCards.map(card => { return card.used })).every(c => c == true)) {
+        let allCardsUsed = (allCards.map(card => { return card.used })).every(c => c == true);
+        if (!allCardsUsed && state.mode == "computer" && state.activePlayer == this.players[0]) {
+            this.computerMove();
+        }
+
+        if (allCardsUsed) {
             this.gameOver();
         }
+    }
+
+    computerMove() {
+        let availableCards = state.activePlayer.deck.cards.filter(card => { if (!card.used) { return card } });
+        let availableTiles = this.tiles.filter(tile => { if (tile !== undefined && tile.html !== null && tile.active) { return tile } });
+        let randomCard = availableCards[Math.floor(Math.random() * availableCards.length)];
+        let randomTile = availableTiles[Math.floor(Math.random() * availableTiles.length)];
+        state.activeCard = randomCard;
+        this.placeCardOnTile(randomTile);
     }
 
     compareValues(tile) {

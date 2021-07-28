@@ -35,6 +35,7 @@ div {
 }
 
 body {
+    touch-action: pan-y, pan-x;
     font-family: 'Inconsolata';
     height: 100vh;
     height: calc(var(--vh, 1vh) * 100);
