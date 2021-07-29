@@ -16,7 +16,6 @@ let state = {
 
 let newGame = () => {
     document.getElementById("game-over").style.display = "none";
-
     document.getElementById("canvas").innerHTML = "";
     document.getElementsByClassName("deck")[0].innerHTML = "";
     document.getElementsByClassName("deck")[1].innerHTML = "";
@@ -34,8 +33,29 @@ let newGame = () => {
 
 let setMode = (mode) => {
     state.mode = mode;
-    document.getElementById("menu").style.display = "none";
-    document.getElementsByClassName("game")[0].style.display = "flex";
+    var tl = anime.timeline({
+        easing: 'easeOutCubic',
+        duration: 200
+    });
+    tl.add({
+        targets: document.getElementById("menu"),
+        opacity: 0,
+    });
+    tl.add({
+        targets: document.getElementsByClassName("game")[0],
+        opacity: 1,
+    });
+    setTimeout(function () {
+        document.getElementById("menu").style.display = "none";
+    }, 200);
+    if (mode == "computer") {
+        setTimeout(function () {
+            let bee = document.getElementsByClassName('bee')[0];
+            let beeContainer = document.getElementById('bee-player');
+            beeContainer.appendChild(bee);
+            beeContainer.style.position = "absolute";
+        }, 200);
+    }
     if (state.activePlayer == state.board.players[0] && state.mode == "computer") {
         state.board.computerMove();
     }
@@ -89,12 +109,22 @@ let Deck = class {
             if (!state.activeCard || state.activeCard.value == card.value) {
                 if (!card.active && !card.used) {
                     card.active = true;
-                    anime({
-                        targets: card.html,
-                        opacity: 0.5,
+                    var tl = anime.timeline({
                         easing: 'easeOutCubic',
-                        duration: 300
+                        duration: 200
                     });
+                    tl.add({
+                        targets: card.html,
+                        scale: 1.3,
+                    });
+                    tl.add({
+                        targets: card.html,
+                        scale: 1,
+                    });
+                    tl.add({
+                        targets: card.html,
+                        opacity: 0.5
+                    })
                     state.activeCard = card;
                 }
                 else if (card.active && state.activeCard.value == card.value) {
@@ -238,6 +268,8 @@ let Board = class {
     }
 
     computerMove() {
+        isSpinning = false;
+        isThinking = true;
         setTimeout(() => {
             let availableCards = state.activePlayer.deck.cards.filter(card => { if (!card.used) { return card } });
             let availableTiles = this.tiles.filter(tile => { if (tile !== undefined && tile.html !== null && tile.active) { return tile } });
@@ -245,6 +277,8 @@ let Board = class {
             let randomTile = availableTiles[Math.floor(Math.random() * availableTiles.length)];
             state.activeCard = randomCard;
             this.placeCardOnTile(randomTile);
+            isThinking = false;
+            isSpinning = true;
         }, 750);
     }
 

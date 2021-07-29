@@ -8,13 +8,10 @@
 
     <title></title>
     <meta name="description" content=" ">
+    <link rel="stylesheet" href="fonts.css">
     <link rel="stylesheet" href="styles.css">
+    <script src="anime.min.js"></script>
     <script src="main.js"></script>
-    <link rel="stylesheet" href="bees.css">
-    <!-- <script src="bees.js"></script> -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"
-        integrity="sha512-z4OUqw38qNLpn1libAN9BsoDx6nbNFio5lA6CuTp9NlK83b89hgyCVq+N5FdBJptINztxn1Z3SaKSKUS5UP60Q=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <!-- <link
         href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAATklEQVQ4jWNgoAL4j0aToge3AFQMGWOTw2k6PgNJcxopaigKA2yC/4mUo50LKDIAVyyQ5AJC6YB4pxGjBt15JCUkQhrweYGUgMdqAeUAADmCM80nYJooAAAAAElFTkSuQmCC"
         rel="icon" type="image/x-icon" /> -->
@@ -22,17 +19,15 @@
 </head>
 
 <body>
-    <div class="swarm"></div>
-
     <div class="pop-up" id="menu">
-        <div>
-            <h1>heck: hex the deck. the game</h1>
-            <h2>Claim the majority of the cards by placing one with a higher value next to other ones to win the game.
-            </h2>
-            <div class="buttons">
-                <button id="computer" onclick="setMode('computer')">Play against a swarm of bees</button>
-                <button id="two-player" onclick="setMode('two-player')">Play locally with a friend</button>
-            </div>
+        <h1>heck</h1>
+        <h2>hex the deck - the game</h2>
+        <canvas class="bee" width="240" height="240"></canvas>
+        <h3>Claim the majority of the cards by placing one with a higher value next to other ones to win the game.
+        </h3>
+        <div class="buttons">
+            <button id="computer" onclick="setMode('computer')">Play with the bee</button>
+            <button id="two-player" onclick="setMode('two-player')">Play locally with a friend</button>
         </div>
     </div>
     <div class="pop-up" id="game-over">
@@ -42,15 +37,18 @@
         </div>
     </div>
     <div class="game">
-        <span>bees' deck</span>
+        <div id="bee-player"></div>
         <div class="deck" id="player-1"></div>
         <div id="canvas-wrapper">
             <div id="canvas"> </div>
         </div>
         <div class="deck" id="player-2"></div>
-        <span>your deck</span>
+        <div id="second-player"></div>
     </div>
     <!-- <span id="credit">by <a href="https://github.com/tusindfryd/">tusindfryd</a></span> -->
 </body>
+
+<script src="zdog.dist.min.js"></script>
+<script src="bee.js"></script>
 
 </html>
