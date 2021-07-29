@@ -2,6 +2,12 @@ window.onload = () => {
     let vh = window.innerHeight * 0.01;
     document.documentElement.style.setProperty('--vh', `${vh}px`);
     state.board = setup();
+    if (navigator.languages.includes("pl" || "pl-PL" || "pl-pl") || ["pl", "pl-PL", "pl-pl"].includes(navigator.language)) {
+        document.getElementById('rules').innerHTML = "Przejmij karty przeciwnika poprzez układanie sąsiednio kart z większymi wartościami. Zajmij większość planszy, aby wygrać.";
+        document.getElementById('computer').innerHTML = "Zagraj z pszczołą (komputerem)";
+        document.getElementById('two-player').innerHTML = "Zagraj z kimś obok lokalnie";
+        document.getElementById('new-game').innerHTML = "Nowa gra";
+    }
 };
 
 const range = (start, stop, step = 1) =>
@@ -363,24 +369,49 @@ let Board = class {
         let scoreboardHTML = document.getElementById('winner');
         if (this.players[0].score > this.players[1].score) {
             if (state.mode == "computer") {
-                scoreboardHTML.innerHTML = "The bee won!";
+                if (navigator.languages.includes("pl" || "pl-PL" || "pl-pl") || ["pl", "pl-PL", "pl-pl"].includes(navigator.language)) {
+                    scoreboardHTML.innerHTML = "Pszczoła wygrała!";
+                }
+                else {
+                    scoreboardHTML.innerHTML = "The bee won!";
+                }
                 isSpinning = false;
                 isThinking = true;
             }
             else {
-                document.getElementById('winner').innerHTML = "Player 1 won!"
+                if (navigator.languages.includes("pl" || "pl-PL" || "pl-pl") || ["pl", "pl-PL", "pl-pl"].includes(navigator.language)) {
+                    document.getElementById('winner').innerHTML = "Wygrał gracz 1!"
+                }
+                else {
+                    document.getElementById('winner').innerHTML = "Player 1 won!"
+                }
             }
         }
         else if (this.players[1].score > this.players[0].score) {
             if (state.mode == "computer") {
-                scoreboardHTML.innerHTML = "You won!";
+                if (navigator.languages.includes("pl" || "pl-PL" || "pl-pl") || ["pl", "pl-PL", "pl-pl"].includes(navigator.language)) {
+                    scoreboardHTML.innerHTML = "Zwycięstwo!";
+                }
+                else {
+                    scoreboardHTML.innerHTML = "You won!";
+                }
             }
             else {
-                document.getElementById('winner').innerHTML = "Player 2 won!"
+                if (navigator.languages.includes("pl" || "pl-PL" || "pl-pl") || ["pl", "pl-PL", "pl-pl"].includes(navigator.language)) {
+                    document.getElementById('winner').innerHTML = "Wygrał gracz 2!"
+                }
+                else {
+                    document.getElementById('winner').innerHTML = "Player 2 won!"
+                }
             }
         }
         else {
-            document.getElementById('winner').innerHTML = "It's a tie!"
+            if (navigator.languages.includes("pl" || "pl-PL" || "pl-pl") || ["pl", "pl-PL", "pl-pl"].includes(navigator.language)) {
+                document.getElementById('winner').innerHTML = "Remis!"
+            }
+            else {
+                document.getElementById('winner').innerHTML = "It's a tie!"
+            }
         }
     }
 }
