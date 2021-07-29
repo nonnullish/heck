@@ -1,6 +1,6 @@
 @media (orientation: landscape) {
     :root {
-        --s: calc((24vw) / 5);
+        --s: calc(100 * var(--vh) / 20);
         --m: 0.3vw;
         --f: calc(var(--s)*3*1.1547/2 + 4*var(--m) - 2px);
     }
@@ -34,8 +34,8 @@ body {
     --blue: #B9DBD7;
 }
 
-.zdog-canvas {
-    cursor: move;
+.bee {
+    cursor: grab;
 }
 
 div {
@@ -146,6 +146,7 @@ h3 {
     box-sizing: border-box;
     text-align: center;
     overflow: hidden;
+    cursor: pointer;
 }
 
 #canvas::before {
@@ -188,8 +189,23 @@ button, [type="button"], [type="reset"], [type="submit"] {
     outline: none;
     background-color: transparent;
     border-radius: 5px;
+    cursor: pointer;
 }
 
 #bee-player {
-    top: 0;
+    height: 200px;
+    margin-bottom: -60px;
+}
+
+#bottom-text {
+    opacity: 0;
+    height: 150px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-direction: column;
+}
+
+#winner {
+    font-size: 1.5em;
 }

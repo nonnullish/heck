@@ -15,20 +15,42 @@ let state = {
 }
 
 let newGame = () => {
-    document.getElementById("game-over").style.display = "none";
+    var tl = anime.timeline({
+        easing: 'easeOutCubic',
+        duration: 300
+    });
+    tl.add({
+        targets: [".scoreboard", ".game"],
+        opacity: 0,
+        easing: 'easeOutCubic',
+    })
+    tl.add({
+        targets: document.getElementById("menu"),
+        opacity: 1,
+    });
+
     document.getElementById("canvas").innerHTML = "";
     document.getElementsByClassName("deck")[0].innerHTML = "";
     document.getElementsByClassName("deck")[1].innerHTML = "";
 
-    state = {
-        board: null,
-        mode: null,
-        activePlayer: null,
-        activeCard: null
-    }
+    let bee = document.getElementsByClassName('bee')[0];
+    let beeContainer = document.getElementById('initial-bee-position');
 
-    state.board = setup();
-    document.getElementById("menu").style.display = "flex";
+    beeContainer.appendChild(bee);
+
+    setTimeout(function () {
+        document.getElementById("winner").innerHTML = "";
+        document.getElementById("menu").style.display = "flex";
+        state = {
+            board: null,
+            mode: null,
+            activePlayer: null,
+            activeCard: null
+        }
+        state.board = setup();
+    }, 300);
+
+
 }
 
 let setMode = (mode) => {
@@ -53,7 +75,6 @@ let setMode = (mode) => {
             let bee = document.getElementsByClassName('bee')[0];
             let beeContainer = document.getElementById('bee-player');
             beeContainer.appendChild(bee);
-            beeContainer.style.position = "absolute";
         }, 200);
     }
     if (state.activePlayer == state.board.players[0] && state.mode == "computer") {
@@ -111,7 +132,7 @@ let Deck = class {
                     card.active = true;
                     var tl = anime.timeline({
                         easing: 'easeOutCubic',
-                        duration: 200
+                        duration: 350
                     });
                     tl.add({
                         targets: card.html,
@@ -272,14 +293,19 @@ let Board = class {
         isThinking = true;
         setTimeout(() => {
             let availableCards = state.activePlayer.deck.cards.filter(card => { if (!card.used) { return card } });
-            let availableTiles = this.tiles.filter(tile => { if (tile !== undefined && tile.html !== null && tile.active) { return tile } });
             let randomCard = availableCards[Math.floor(Math.random() * availableCards.length)];
-            let randomTile = availableTiles[Math.floor(Math.random() * availableTiles.length)];
             state.activeCard = randomCard;
+            state.activePlayer.deck.selectCardFromDeck(randomCard);
+        }, 750);
+        setTimeout(() => {
+            let availableTiles = this.tiles.filter(tile => { if (tile !== undefined && tile.html !== null && tile.active) { return tile } });
+            let randomTile = availableTiles[Math.floor(Math.random() * availableTiles.length)];
             this.placeCardOnTile(randomTile);
+        }, 1500);
+        setTimeout(() => {
             isThinking = false;
             isSpinning = true;
-        }, 750);
+        }, 2000);
     }
 
     compareValues(tile) {
@@ -328,13 +354,30 @@ let Board = class {
         results.forEach((value, key) => {
             key.score = value;
         });
-        document.getElementById("game-over").style.display = "flex";
-
+        anime({
+            targets: document.getElementById("bottom-text"),
+            opacity: 1,
+            easing: 'easeOutCubic',
+            duration: 300
+        });
+        let scoreboardHTML = document.getElementById('winner');
         if (this.players[0].score > this.players[1].score) {
-            document.getElementById('winner').innerHTML = "Player 1 won!"
+            if (state.mode == "computer") {
+                scoreboardHTML.innerHTML = "The bee won!";
+                isSpinning = false;
+                isThinking = true;
+            }
+            else {
+                document.getElementById('winner').innerHTML = "Player 1 won!"
+            }
         }
         else if (this.players[1].score > this.players[0].score) {
-            document.getElementById('winner').innerHTML = "Player 2 won!"
+            if (state.mode == "computer") {
+                scoreboardHTML.innerHTML = "You won!";
+            }
+            else {
+                document.getElementById('winner').innerHTML = "Player 2 won!"
+            }
         }
         else {
             document.getElementById('winner').innerHTML = "It's a tie!"
@@ -343,6 +386,12 @@ let Board = class {
 }
 
 let setup = () => {
+    anime({
+        targets: document.getElementById("bottom-text"),
+        opacity: 0,
+        easing: 'easeOutCubic',
+        duration: 300
+    });
     let players = [];
     let random = Math.round(Math.random());
     if (random == 1) {
@@ -370,20 +419,12 @@ let setup = () => {
         }
     }
     if (random == 1) {
-        anime({
-            targets: players[1].deck.cards[0].html.parentElement,
-            opacity: 0.5,
-            easing: 'easeOutCubic',
-            duration: 300
-        });
+        players[1].deck.cards[0].html.parentElement.style.opacity = 0.5;
+        players[0].deck.cards[0].html.parentElement.style.opacity = 1;
     }
     else {
-        anime({
-            targets: players[0].deck.cards[1].html.parentElement,
-            opacity: 0.5,
-            easing: 'easeOutCubic',
-            duration: 300
-        });
+        players[0].deck.cards[0].html.parentElement.style.opacity = 0.5;
+        players[1].deck.cards[0].html.parentElement.style.opacity = 1;
     }
     return new Board(players);
 };

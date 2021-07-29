@@ -7,9 +7,11 @@ let bee = new Zdog.Illustration({
     rotate: { y: -Zdog.TAU / 8, x: -Zdog.TAU / 16 },
     onDragStart: function () {
         isSpinning = false;
+        document.getElementsByClassName("bee")[0].style.cursor = "grabbing";
     },
     onDragEnd: function () {
         isSpinning = true;
+        document.getElementsByClassName("bee")[0].style.cursor = "grab";
     },
 });
 
