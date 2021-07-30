@@ -1,7 +1,10 @@
+let clickSound = new Audio();
+
 window.onload = () => {
     let vh = window.innerHeight * 0.01;
     document.documentElement.style.setProperty('--vh', `${vh}px`);
     state.board = setup();
+    clickSound.src = "click.wav";
     if (navigator.languages.includes("pl" || "pl-PL" || "pl-pl") || ["pl", "pl-PL", "pl-pl"].includes(navigator.language)) {
         document.getElementById('rules').innerHTML = "Przejmij karty przeciwnika poprzez układanie sąsiednio kart z większymi wartościami. Zajmij większość planszy, aby wygrać.";
         document.getElementById('computer').innerHTML = "Zagraj z pszczołą (komputerem)";
@@ -9,6 +12,10 @@ window.onload = () => {
         document.getElementById('new-game').innerHTML = "Nowa gra";
     }
 };
+
+let playSound = () => {
+    clickSound.play();
+}
 
 const range = (start, stop, step = 1) =>
     Array(Math.ceil((stop - start) / step)).fill(start).map((x, y) => x + y * step)
@@ -21,13 +28,19 @@ let state = {
 }
 
 let newGame = () => {
+    playSound();
     var tl = anime.timeline({
         easing: 'easeOutCubic',
         duration: 300
     });
     tl.add({
-        targets: [".scoreboard", ".game"],
+        targets: [".scoreboard", ".game", "body"],
         opacity: 0,
+        easing: 'easeOutCubic',
+    })
+    tl.add({
+        targets: "body",
+        opacity: 1,
         easing: 'easeOutCubic',
     })
     tl.add({
@@ -60,6 +73,7 @@ let newGame = () => {
 }
 
 let setMode = (mode) => {
+    playSound();
     state.mode = mode;
     var tl = anime.timeline({
         easing: 'easeOutCubic',
@@ -132,6 +146,7 @@ let Deck = class {
     }
 
     selectCardFromDeck(card) {
+        playSound();
         if (state.activePlayer.deck.cards.includes(card)) {
             if (!state.activeCard || state.activeCard.value == card.value) {
                 if (!card.active && !card.used) {
@@ -223,6 +238,7 @@ let Board = class {
     }
 
     placeCardOnTile(tile) {
+        playSound();
         if (state.activeCard != null && tile.active == true) {
             tile.cardValue = state.activeCard.value;
             tile.ownedBy = state.activePlayer;

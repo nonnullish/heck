@@ -159,6 +159,7 @@ h3 {
 
 .hexagon#hidden {
     opacity: 0;
+    cursor: context-menu;
 }
 
 .game span:nth-of-type(2) {
@@ -208,4 +209,12 @@ button, [type="button"], [type="reset"], [type="submit"] {
 
 #winner {
     font-size: 1.5em;
+}
+
+::-moz-selection {
+    background: var(--dark-yellow);
+}
+
+::selection {
+    background: var(--dark-yellow);
 }
