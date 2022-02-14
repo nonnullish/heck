@@ -191,6 +191,7 @@ button, [type="button"], [type="reset"], [type="submit"] {
     background-color: transparent;
     border-radius: 5px;
     cursor: pointer;
+    color: #222222;
 }
 
 #bee-player {
